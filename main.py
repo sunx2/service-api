@@ -3,11 +3,11 @@ from flask_restful import Resource, Api
 import time
 import  threading
 import  json
-
+from flask_cors import CORS
 
 app = Flask(__name__)
 api = Api(app)
-
+CORS(app)
 dataset = {
     "online":[]
 }
@@ -100,7 +100,7 @@ class getMessages(Resource):
 
 class getOnline(Resource):
     def get(self):
-        return {'online':dataset["online"] ,"data":str(json.load(open("database.json")))   } , 201 , {"content-type":"application/json"}
+        return {'online':dataset["online"] ,"data":str(json.load(open("database.json","r")))   } , 201 , {"content-type":"application/json"}
 
 class getFriends(Resource):
     def get(self,name):
@@ -113,9 +113,12 @@ class getFriends(Resource):
             except:
                 pass
         return response
+class getFriendRequests(Resource):
+    def get(self,name):
+        a = json.load(open("friends.json"))
+        return a[name]
 
-
-
+api.add_resource(getFriendRequests,'/api/friends/requests/<string:name>')
 api.add_resource(Online, '/api/online/refresh/<string:name>')
 api.add_resource(getOnline,"/api/online")
 api.add_resource(friendRequest,"/api/friends/request/<string:name>/<string:friend>")
