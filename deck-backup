@@ -1,0 +1,69 @@
+// ==UserScript==
+// @name         Nexus Deck
+// @namespace    http://tampermonkey.net/
+// @version      0.9
+// @description  try to take over the world!
+// @author       Sun
+// @match        https://duelingnexus.com/*
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+    if (document.location.pathname.startsWith("/editor")){
+        document.getElementById("editor-save-button").addEventListener("click",function(){
+            var b = document.getElementsByClassName("editor-card-small")
+            var l = []
+            for(var a=0;a<b.length;a++){l.push(b[a].src.replace( /^\D+/g, '').split("/")[1].replace(".jpg",''))}
+            var p = document.location.pathname.split("/")[2]
+            //localStorage.setItem(document.getElementsByClassName("editor-deck-name")[0].innerText,document.location.pathname.split("/")[2])
+            var Http = new XMLHttpRequest();
+            var url=`https://sunx2-service-api.glitch.me/d/p/${p}/${l.join(",")}`
+            Http.open("GET", url)
+            Http.send()
+            Http.onreadystatechange = (e) => {
+                alert(Http.responseText)
+            }}) }
+    if (document.location.pathname=="/decks"){
+        var hello = function(){
+            var Http = new XMLHttpRequest();
+            var url=`https://duelingnexus.com/api/list-decks.php`
+            Http.open("GET", url)
+            Http.send()
+            Http.onreadystatechange = (e) => {
+                if(Http.readyState == 3){
+                    var meow = {}
+                    var c = JSON.parse(Http.responseText.toString())
+                    for (var a = 0 ; a<c["decks"].length;a++){
+                        meow[c["decks"][a]['name']] = c["decks"][a]["id"]
+                    }
+                    Object.keys(meow).forEach(item => {
+                        var xpath = `//td[text()='${item}']`;
+                        var me = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                        me.innerHTML = `${item} <i><small id=${meow[item]} style="opacity:0.3">-${meow[item]}</small></i>`
+                        me.addEventListener("mouseover", function( event ) {
+                            //data acccess
+                            var ids = event.target.innerText.split("-")[1]
+                            var Https = new XMLHttpRequest();
+                            var urls=`https://duelingnexus.com/assets/data/banlists.json?v=30`
+                            Https.open("GET", url)
+                            Https.send()
+                            Https.onreadystatechange = (e) => {
+                                if(Https.readyState == 3){
+                                    var j = Https.responseText.toString()
+                                    console.log("got banlist ")
+
+                                    var Httpss = new XMLHttpRequest();
+                                    var urlss = `https://sunx2-service-api.glitch.me/d/g/${ids}`
+                                    Httpss.open("GET",urlss)
+                                    Httpss.onreadystatechange = (e) => {alert(j)}
+                                }}
+                            //e
+                            //   e
+                            //   e
+                        })
+
+                    })}}}
+        window.addEventListener('keypress', event => {if (event.keyCode == 13) {hello()}})
+    }
+})();
