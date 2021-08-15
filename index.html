@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omega Server - Go UI</title>
+    <link rel="icon" type="image/ico" href="/static/favicon.ico" />
+    <link rel="stylesheet" href="/static/prism.css">
+    <script src="/static/prism.js" defer></script>
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <style>
+        h3 {
+            font-weight: lighter;
+        }
+
+        .collapsible {
+            background-color: grey;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            text-align: left;
+        }
+
+        .active,
+        .collapsible:hover {
+            background-color: black;
+        }
+
+        .content {
+            padding: 0 18px;
+            display: none;
+            overflow: hidden;
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+    </div>
+    <main class="container">
+        <hgroup>
+            <h1>OmegaDB Interface</h1>
+            <h6 style="color: red; font-weight: lighter;"> Built on <b>{{.version}}</b> </h6>
+            <p>Fastest Database fuzzy search API with < 10 ms latency on single card on low end machines.</p>
+        </hgroup>
+        <div class="grid">
+            <div>
+                <article>
+                    <header>
+                        <h4>Endpoints</h4>
+                    </header>
+                    <h5 style="color: crimson;">/search/<b>:card</b></h5>
+                    <p style="color: gainsboro;">Searches a card in server. Can take mulitple inputs using <b>comma ( ,
+                            )</b></p>
+                </article>
+                <article>
+                    <header>Links</header>
+                    <a href="https://github.com/sunx2/Omega-Card-database/tree/master/database"> Card Database Json</a><hr></hr>
+                    <a href='https://raw.githubusercontent.com/sunx2/Omega-Card-database/master/database/lang/data-de-min.json'>data-de-min.json</a><hr></hr><a href='https://raw.githubusercontent.com/sunx2/Omega-Card-database/master/database/lang/data-de.json'>data-de.json</a><hr></hr><a href='https://raw.githubusercontent.com/sunx2/Omega-Card-database/master/database/lang/data-en-min.json'>data-en-min.json</a><hr></hr><a href='https://raw.githubusercontent.com/sunx2/Omega-Card-database/master/database/lang/data-en.json'>data-en.json</a><hr></hr><a href='https://raw.githubusercontent.com/sunx2/Omega-Card-database/master/database/lang/data-es-min.json'>data-es-min.json</a><hr></hr><a href='https://raw.githubusercontent.com/sunx2/Omega-Card-database/master/database/lang/data-es.json'>data-es.json</a><hr></hr><a href='https://raw.githubusercontent.com/sunx2/Omega-Card-database/master/database/lang/data-fr-min.json'>data-fr-min.json</a><hr></hr><a href='https://raw.githubusercontent.com/sunx2/Omega-Card-database/master/database/lang/data-fr.json'>data-fr.json</a><hr></hr><a href='https://raw.githubusercontent.com/sunx2/Omega-Card-database/master/database/lang/data-it-min.json'>data-it-min.json</a><hr></hr><a href='https://raw.githubusercontent.com/sunx2/Omega-Card-database/master/database/lang/data-it.json'>data-it.json</a><hr></hr><a href='https://raw.githubusercontent.com/sunx2/Omega-Card-database/master/database/lang/data-ja-min.json'>data-ja-min.json</a><hr></hr><a href='https://raw.githubusercontent.com/sunx2/Omega-Card-database/master/database/lang/data-ja.json'>data-ja.json</a><hr></hr><a href='https://raw.githubusercontent.com/sunx2/Omega-Card-database/master/database/lang/data-ko-min.json'>data-ko-min.json</a><hr></hr><a href='https://raw.githubusercontent.com/sunx2/Omega-Card-database/master/database/lang/data-ko.json'>data-ko.json</a><hr></hr><a href='https://raw.githubusercontent.com/sunx2/Omega-Card-database/master/database/lang/data-pt-min.json'>data-pt-min.json</a><hr></hr><a href='https://raw.githubusercontent.com/sunx2/Omega-Card-database/master/database/lang/data-pt.json'>data-pt.json</a>
+                </article>
+            </div>
+            <div>
+                <article>
+                    <header>
+                        <h4>Test Area</h4>
+                    </header>
+                    <p id="b"></p><input type="text" id="card" placeholder="enter card names" />
+                    <button type="button" class="collapsible">Search</button>
+                    <pre class="content"><code class="language-json" id="code"></code></pre>
+
+                </article>
+            </div>
+        </div>
+    </main>
+</body>
+
+<script>
+    var coll = document.getElementsByClassName("collapsible");
+    coll[0].addEventListener("click", function () {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.display === "block") {
+            p = document.getElementById("card").value
+            axios.get("/search/" + p).then(resp => {
+                p = document.getElementById("code")
+                p.innerHTML = JSON.stringify(resp.data, null, 2)
+                Prism.highlightElement(p)
+            })
+                .catch(err => {
+                    // Handle Error Here
+                    console.error(err);
+                });
+        } else {
+            content.style.display = "block";
+            p = document.getElementById("card").value
+            axios.get("/search/" + p).then(resp => {
+                p = document.getElementById("code")
+                p.innerHTML = JSON.stringify(resp.data, null, 2)
+                Prism.highlightElement(p)
+            })
+                .catch(err => {
+                    // Handle Error Here
+                    console.error(err);
+                });
+        }
+    })
+    document.getElementById("b").innerHTML = window.location.href + "search/"
+
+</script>
+
+</html>
+
+
+
+
