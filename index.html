@@ -84,7 +84,7 @@
         var content = this.nextElementSibling;
         if (content.style.display === "block") {
             p = document.getElementById("card").value
-            axios.get("/search/" + p).then(resp => {
+            axios.get(window.location.href + "search/" + p).then(resp => {
                 p = document.getElementById("code")
                 p.innerHTML = JSON.stringify(resp.data, null, 2)
                 Prism.highlightElement(p)
@@ -96,7 +96,7 @@
         } else {
             content.style.display = "block";
             p = document.getElementById("card").value
-            axios.get("/search/" + p).then(resp => {
+            axios.get(window.location.href + "search/" + p).then(resp => {
                 p = document.getElementById("code")
                 p.innerHTML = JSON.stringify(resp.data, null, 2)
                 Prism.highlightElement(p)
